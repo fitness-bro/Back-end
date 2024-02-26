@@ -55,6 +55,7 @@ public class LoginController {
         return ResponseEntity.ok().body(ApiResponse.onSuccess("code : " + code));
     }
 
+
     @GetMapping("/oauth2/code/token/kakao")
     public ResponseEntity<ApiResponse<LoginDTO>> KakaoCode(@RequestParam(value = "code") String code) {
         ResponseEntity<String> stringResponseEntity = kakaoService.getKakaoAccessToken(code);
