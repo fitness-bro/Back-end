@@ -2,9 +2,7 @@ package FitnessBro.domain.Chat;
 
 
 import jakarta.persistence.*;
-
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 
 import java.time.LocalDateTime;
 
@@ -21,6 +19,8 @@ public class ChatMessage {
     @GeneratedValue
     private Long id;
 
+    //보내는 사람 아이디
+    private Long userId;
     //보내는 사람
     private String sender;
     //내용

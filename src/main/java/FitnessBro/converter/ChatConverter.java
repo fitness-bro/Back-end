@@ -54,6 +54,7 @@ public class ChatConverter {
 
         return ChatMessage.builder()
                 .chatRoom(chatRoom)
+                .userId(message.getUserId())
                 .message(message.getMessage())
                 .createdAt(now)
                 .sender(message.getSender())
@@ -62,8 +63,8 @@ public class ChatConverter {
 
     public static ChatRoomResponseDTO.ChatMessageDTO toSimpleChatMessageDTO(ChatMessage chatMessage){
         return ChatRoomResponseDTO.ChatMessageDTO.builder()
+                .userId(chatMessage.getUserId())
                 .message(chatMessage.getMessage())
-                .sender(chatMessage.getSender())
                 .createdAt(chatMessage.getCreatedAt())
                 .build();
     }

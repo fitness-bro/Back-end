@@ -47,7 +47,7 @@ public class ChatRoomResponseDTO {
     @Builder
     @Getter
     public static class ChatMessageDTO{
-        private String sender;
+        private Long userId;
         private String message;
         private LocalDateTime createdAt;
     }
