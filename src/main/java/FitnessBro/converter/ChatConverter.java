@@ -75,14 +75,18 @@ public class ChatConverter {
     }
 
     public static ChatRoomResponseDTO.ChatRoomSimpleDTO toMemberChatRoomSimpleDTO(ChatRoom chatRoom){
+        List<ChatMessage>chatMessageList = chatRoom.getChatMessage();
+        ChatMessage lastChatMessage = chatMessageList.get(chatMessageList.size() - 1);
+        LocalDateTime time = lastChatMessage.getCreatedAt();
 
         return ChatRoomResponseDTO.ChatRoomSimpleDTO.builder()
                 .chatRoomId(chatRoom.getId())
+                .userId(chatRoom.getMember().getId())
                 .userName(chatRoom.getMember().getNickname())
                 .partnerName(chatRoom.getCoach().getNickname())
                 .chatMessageDTOList(ChatConverter.toSimpleChatMessageListDTO(chatRoom.getChatMessage()))
                 .lastChatMessage(chatRoom.getLastChatMessage())
-                .lastChatTime(chatRoom.getUpdatedAt())
+                .lastChatTime(time)
                 .pictureUrl(chatRoom.getCoach().getPictureURL())
                 .build();
     }
@@ -95,12 +99,17 @@ public class ChatConverter {
 
     public static ChatRoomResponseDTO.ChatRoomSimpleDTO toCoachChatRoomSimpleDTO(ChatRoom chatRoom){
 
+        List<ChatMessage>chatMessageList = chatRoom.getChatMessage();
+        ChatMessage lastChatMessage = chatMessageList.get(chatMessageList.size() - 1);
+        LocalDateTime time = lastChatMessage.getCreatedAt();
+
         return ChatRoomResponseDTO.ChatRoomSimpleDTO.builder()
                 .chatRoomId(chatRoom.getId())
+                .userId(chatRoom.getCoach().getId())
                 .userName(chatRoom.getCoach().getNickname())
                 .partnerName(chatRoom.getMember().getNickname())
                 .lastChatMessage(chatRoom.getLastChatMessage())
-                .lastChatTime(chatRoom.getUpdatedAt())
+                .lastChatTime(time)
                 .chatMessageDTOList(ChatConverter.toSimpleChatMessageListDTO(chatRoom.getChatMessage()))
                 .pictureUrl(chatRoom.getMember().getPictureURL())
                 .build();
