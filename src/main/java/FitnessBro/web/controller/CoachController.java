@@ -190,12 +190,28 @@ public class CoachController {
         Long userId = loginService.getIdByEmail(userEmail);
 
         try {
-//            coachService.deleteCoachPictures(userId);   // 동네형 사진, 사진첩 지우기
             coachService.insertCoachInfo(userId, request);
             if(picture != null) coachService.insertCoachPicture(userId, picture);   // 동네형 프로필 이미지 등록
             if(pictureList != null) coachService.insertCoachAlbum(userId,pictureList); // 동네형 사진첩 이미지 등록
 
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess("동네형의 정보가 성공적으로 수정되었습니다."));
+        } catch (Exception e){
+            ApiResponse<String> apiResponse = ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
+        }
+    }
+
+    @DeleteMapping("/update/delete/image")
+    @Operation(summary = "동네형 내 정보 수정하기에서 프로필 이미지 삭제 API")
+    public ResponseEntity<ApiResponse<String>> coachDeleteProfileImage(@RequestHeader(value = "token") String token){
+
+        String userEmail = loginService.decodeJwt(token);
+        Long userId = loginService.getIdByEmail(userEmail);
+
+        try {
+            coachService.deleteCoachProfileImage(userId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess("동네형의 프로필 이미지가 성공적으로 삭제되었습니다."));
         } catch (Exception e){
             ApiResponse<String> apiResponse = ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
