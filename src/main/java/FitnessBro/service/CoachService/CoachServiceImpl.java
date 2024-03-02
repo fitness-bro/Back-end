@@ -111,6 +111,16 @@ public class CoachServiceImpl implements CoachService{
 
         Coach coach = coachRepository.findById(coachId).orElse(null);
 
+        if(coach.getPictureURL() != null){      // 이미 프로필 이미지가 존재하는 경우 AmazonS3에서 지우는 코드
+            String coachPictureURL = coach.getPictureURL();
+            String savedUuid = coachPictureURL.substring(coachPictureURL.lastIndexOf("/profile/") + "/profile/".length());
+            Uuid uuid = uuidRepository.findByUuid(savedUuid);
+
+            s3Manager.deleteFile(s3Manager.generateProfileKeyName(uuid));
+            uuidRepository.deleteByUuid(savedUuid);
+            coach.setPictureURL(null);
+        }
+
         String uuid = UUID.randomUUID().toString();
         Uuid savedUuid = uuidRepository.save(Uuid.builder().uuid(uuid).build());
         String pictureUrl = s3Manager.uploadFile(s3Manager.generateProfileKeyName(savedUuid), picture);
@@ -123,6 +133,20 @@ public class CoachServiceImpl implements CoachService{
     public void insertCoachAlbum(Long coachId, List<MultipartFile> pictureList) {   // 동네형 사진첩 삽입
 
         Coach coach = coachRepository.findById(coachId).orElse(null);
+        Boolean isExist = coachImageRepository.existsByCoachId(coachId);
+
+        if(isExist){    // 이미 앨범에 사진이 존재할 경우 모두 지우기
+            List<CoachImage> coachImageList = coachImageRepository.findByCoachId(coachId);
+            for(CoachImage coachImage : coachImageList){
+                String pictureUrl = coachImage.getUrl();
+                String savedUuid = pictureUrl.substring(pictureUrl.lastIndexOf("/album/") + "/album/".length());
+                Uuid uuid = uuidRepository.findByUuid(savedUuid);
+
+                s3Manager.deleteFile(s3Manager.generateAlbumKeyName(uuid));
+                uuidRepository.deleteByUuid(savedUuid);
+                coachImageRepository.deleteById(coachImage.getId());
+            }
+        }
 
         for(MultipartFile picture : pictureList){   // picture마다 유일한 URL 값 생성
             String uuid = UUID.randomUUID().toString();
@@ -166,21 +190,6 @@ public class CoachServiceImpl implements CoachService{
 
     }
 
-//    @Override
-//    @Transactional
-//    public void insertCoachPictureURL(Long userId, String pictureURL) {       // 사진 URL을 통해 저장
-//
-//        Coach coach = coachRepository.findById(userId).orElse(null);
-//
-//        String uuid = pictureURL.substring(pictureURL.lastIndexOf("/profile/") + "/profile/".length());
-//        Uuid savedUuid = uuidRepository.save(Uuid.builder().uuid(uuid).build());
-//
-//        // 사진 자체에 대한 정보가 없어서 안됨
-//        String pictureUrl = s3Manager.uploadFile(s3Manager.generateProfileKeyName(savedUuid), picture);
-//
-//        coach.setPictureURL(pictureUrl);
-//
-//    }
 
     @Override
     @Transactional
