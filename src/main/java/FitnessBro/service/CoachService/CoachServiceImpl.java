@@ -160,10 +160,9 @@ public class CoachServiceImpl implements CoachService{
 
     @Override
     @Transactional
-    public void deleteCoachPictures(Long userId) {
+    public void deleteCoachProfileImage(Long coachId) {
 
-        Coach coach = coachRepository.findById(userId).orElse(null);
-        Boolean isExist = coachImageRepository.existsByCoachId(userId);
+        Coach coach = coachRepository.findById(coachId).orElse(null);
 
         if(coach.getPictureURL() != null){      // 이미 프로필 이미지가 존재하는 경우 AmazonS3에서 지우는 코드
             String coachPictureURL = coach.getPictureURL();
@@ -173,19 +172,6 @@ public class CoachServiceImpl implements CoachService{
             s3Manager.deleteFile(s3Manager.generateProfileKeyName(uuid));
             uuidRepository.deleteByUuid(savedUuid);
             coach.setPictureURL(null);
-        }
-
-        if(isExist){    // 이미 앨범에 사진이 존재할 경우 모두 지우기
-            List<CoachImage> coachImageList = coachImageRepository.findByCoachId(userId);
-            for(CoachImage coachImage : coachImageList){
-                String pictureUrl = coachImage.getUrl();
-                String savedUuid = pictureUrl.substring(pictureUrl.lastIndexOf("/album/") + "/album/".length());
-                Uuid uuid = uuidRepository.findByUuid(savedUuid);
-
-                s3Manager.deleteFile(s3Manager.generateAlbumKeyName(uuid));
-                uuidRepository.deleteByUuid(savedUuid);
-                coachImageRepository.deleteById(coachImage.getId());
-            }
         }
 
     }
