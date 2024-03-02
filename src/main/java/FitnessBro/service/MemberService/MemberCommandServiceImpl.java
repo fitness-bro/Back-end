@@ -197,9 +197,10 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     }
 
     @Override
-    public void deleteMemberPicture(Long userId) {
+    @Transactional
+    public void deleteMemberProfileImage(Long memberId) {
 
-        Member member = memberRepository.findById(userId).orElse(null);
+        Member member = memberRepository.findById(memberId).orElse(null);
 
         if(member.getPictureURL() != null){      // 이미 프로필 이미지가 존재하는 경우 AmazonS3에서 지우는 코드
             String memberPictureURL = member.getPictureURL();
@@ -210,6 +211,8 @@ public class MemberCommandServiceImpl implements MemberCommandService {
             uuidRepository.deleteByUuid(savedUuid);
             member.setPictureURL(null);
         }
+
     }
+
 
 }

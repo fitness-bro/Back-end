@@ -26,6 +26,6 @@ public interface MemberCommandService {
 
     void insertInfoWithImage(Long memberId, MemberRequestDTO.MemberProfileRegisterDTO request, MultipartFile file);
 
-    void deleteMemberPicture(Long userId);
+    void deleteMemberProfileImage(Long memberId);
 }
 

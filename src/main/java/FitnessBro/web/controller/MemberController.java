@@ -142,7 +142,7 @@ public class MemberController {
         }
     }
 
-    @PutMapping(value = "/update", consumes = "multipart/form-data")
+    @PatchMapping(value = "/update", consumes = "multipart/form-data")
     @Operation(summary = "사용자 내 정보 수정하기 API")
     public ResponseEntity<ApiResponse<String>> memberUpdate(@RequestPart(value = "request") MemberRequestDTO.MemberProfileRegisterDTO request,
                                                            @RequestPart(value = "picture", required = false) MultipartFile file,
@@ -151,7 +151,6 @@ public class MemberController {
         Long userId = loginService.getIdByEmail(userEmail);
 
         try {
-            memberCommandService.deleteMemberPicture(userId);
             if(file != null){   // 사용자가 본인의 이미지를 업로드 하는 경우
                 memberCommandService.insertInfoWithImage(userId, request, file);
             } else {    // 사용자가 본인의 이미지를 업로드 하지 않는 경우
@@ -159,6 +158,23 @@ public class MemberController {
             }
             ApiResponse<String> apiResponse = ApiResponse.onSuccess("회원의 정보가 성공적으로 수정되었습니다.");
             return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+        } catch (Exception e){
+            ApiResponse<String> apiResponse = ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
+        }
+    }
+
+    @DeleteMapping("/update/delete/image")
+    @Operation(summary = "사용자 내 정보 수정하기에서 프로필 이미지 삭제 API")
+    public ResponseEntity<ApiResponse<String>> memberDeleteProfileImage(@RequestHeader(value = "token") String token){
+
+        String userEmail = loginService.decodeJwt(token);
+        Long userId = loginService.getIdByEmail(userEmail);
+
+        try {
+            memberCommandService.deleteMemberProfileImage(userId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess("사용자의 프로필 이미지가 성공적으로 삭제되었습니다."));
         } catch (Exception e){
             ApiResponse<String> apiResponse = ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
