@@ -113,6 +113,10 @@ public class CoachResponseDTO {
         Integer price;
         String comment;
         String introduction;
+        String address;
+        String region;
+        String subAddress;
+        String detailAddress;
         List<String> pictureURLs;
 
     }

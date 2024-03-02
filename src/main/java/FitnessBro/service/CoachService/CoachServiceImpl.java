@@ -166,6 +166,22 @@ public class CoachServiceImpl implements CoachService{
 
     }
 
+//    @Override
+//    @Transactional
+//    public void insertCoachPictureURL(Long userId, String pictureURL) {       // 사진 URL을 통해 저장
+//
+//        Coach coach = coachRepository.findById(userId).orElse(null);
+//
+//        String uuid = pictureURL.substring(pictureURL.lastIndexOf("/profile/") + "/profile/".length());
+//        Uuid savedUuid = uuidRepository.save(Uuid.builder().uuid(uuid).build());
+//
+//        // 사진 자체에 대한 정보가 없어서 안됨
+//        String pictureUrl = s3Manager.uploadFile(s3Manager.generateProfileKeyName(savedUuid), picture);
+//
+//        coach.setPictureURL(pictureUrl);
+//
+//    }
+
     @Override
     @Transactional
     public Coach updateCoach(Long coachId, CoachRequestDTO.CoachUpdateRequestDTO coachUpdateRequestDTO){

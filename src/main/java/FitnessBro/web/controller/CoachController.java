@@ -147,7 +147,6 @@ public class CoachController {
 
         String userEmail = loginService.decodeJwt(token);
         Long userId = loginService.getIdByEmail(userEmail);
-
         try {
             Coach coach = coachService.getCoachById(userId);
             CoachResponseDTO.CoachMyInfoDTO coachMyInfoDTO = CoachConverter.toCoachMyInfoDTO(coach);
@@ -185,6 +184,7 @@ public class CoachController {
     @Operation(summary = "동네형 내 정보 수정하기 API")
     public ResponseEntity<ApiResponse<String>> coachUpdate(@RequestPart(value = "request") CoachRequestDTO.CoachProfileRegisterDTO request,
                                                                                                  @RequestPart(value = "picture", required = false) MultipartFile picture,
+//                                                                                                 @RequestPart(value = "pictureURL", required = false) String pictureURL,
                                                                                                  @RequestPart(value = "album", required = false) List<MultipartFile> pictureList,
                                                                                                  @RequestHeader(value = "token") String token){
         String userEmail = loginService.decodeJwt(token);
@@ -194,6 +194,7 @@ public class CoachController {
             coachService.deleteCoachPictures(userId);   // 동네형 사진, 사진첩 지우기
             coachService.insertCoachInfo(userId, request);
             if(picture != null) coachService.insertCoachPicture(userId, picture);
+//            if(pictureURL != null) coachService.insertCoachPictureURL(userId, pictureURL);  // 동네형 사진이 URL 형식으로 주어질 때
             if(pictureList != null) coachService.insertCoachAlbum(userId,pictureList); // 동네형 사진첩 이미지 등록
 
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess("동네형의 정보가 성공적으로 수정되었습니다."));
@@ -202,7 +203,5 @@ public class CoachController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
         }
     }
-
-
 
 }
