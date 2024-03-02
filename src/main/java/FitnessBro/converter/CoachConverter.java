@@ -111,6 +111,10 @@ public class CoachConverter {
                 .schedule(coach.getSchedule())
                 .comment(coach.getComment())
                 .introduction(coach.getIntroduction())
+                .address(coach.getAddress())
+                .region(coach.getRegion())
+                .subAddress(coach.getSubAddress())
+                .detailAddress(coach.getDetailAddress())
                 .pictureURLs(coach.getCoachImageList().stream().
                         map(CoachImage::getUrl).
                         collect(Collectors.toList()))

@@ -23,6 +23,5 @@ public interface CoachService {
 
     void deleteCoachPictures(Long userId);
 
-
-
+//    void insertCoachPictureURL(Long userId, String pictureURL);
 }
