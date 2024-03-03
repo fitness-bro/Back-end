@@ -4,6 +4,7 @@ import FitnessBro.apiPayload.ApiResponse;
 import FitnessBro.converter.CoachConverter;
 import FitnessBro.converter.MemberConverter;
 import FitnessBro.domain.Coach;
+import FitnessBro.domain.Favorites;
 import FitnessBro.domain.Member;
 import FitnessBro.service.LoginService.LoginService;
 import FitnessBro.service.MemberService.MemberCommandService;
@@ -66,17 +67,17 @@ public class MemberController {
 
     @PostMapping("/favorite/{coachId}")
     @Operation(summary = "사용자가 찜한 형 등록하기 API", description = "사용자가 찜하려는 동네형의 아이디를 입력해주세요.")
-    public ResponseEntity<ApiResponse<String>> createFavoriteCoach(@RequestHeader(value = "token") String token,
-                                                                   @PathVariable(value = "coachId") Long coachId) {
+    public ResponseEntity<ApiResponse<Favorites>> createFavoriteCoach(@RequestHeader(value = "token") String token,
+                                                                      @PathVariable(value = "coachId") Long coachId) {
         String userEmail = loginService.decodeJwt(token);
         Long userId = loginService.getIdByEmail(userEmail);
 
         try{
-            memberCommandService.createFavoriteCoach(userId, coachId);
-            ApiResponse<String> apiResponse = ApiResponse.onSuccess("동네형 찜 등록을 성공했습니다.");
+
+            ApiResponse<Favorites> apiResponse = ApiResponse.onSuccess(memberCommandService.createFavoriteCoach(userId, coachId));
             return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
         }catch (Exception e){
-            ApiResponse<String> apiResponse = ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
+            ApiResponse<Favorites> apiResponse = ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
         }
     }
