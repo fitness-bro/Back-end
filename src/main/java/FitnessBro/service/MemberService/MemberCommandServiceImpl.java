@@ -93,7 +93,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
     @Override
     @Transactional
-    public Favorites createFavoriteCoach(Long userId, Long coachId) {
+    public String createFavoriteCoach(Long userId, Long coachId) {
 
         // userId, coachId로 멤버와 코치 객체 가져오기
         Member member = memberRepository.findById(userId).orElse(null);
@@ -106,17 +106,18 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
         for(Favorites favorites:fl){
             if(favorites.getCoach() == coach){
-                favorites.setStatus(!favorites.isStatus());
 
-                return favorites;
+                favoriteRepository.delete(favorites);
+                return "찜을 취소했습니다.";
             }
         }
 
         // favorites repository에 저장
         Favorites favorites = FavoriteConverter.toFavorite(member, coach);
         favoriteRepository.save(favorites);
+        return "성공적으로 찜했습니다.";
 
-        return favorites;
+
     }
 
 
