@@ -1,6 +1,7 @@
 package FitnessBro.service.MemberService;
 
 
+import FitnessBro.domain.Coach;
 import FitnessBro.domain.Favorites;
 import FitnessBro.domain.Member;
 import FitnessBro.web.dto.Login.Role;
@@ -19,6 +20,8 @@ public interface MemberCommandService {
     public String joinSocialMember(String email, String id);
 
     String createFavoriteCoach(Long userId, Long coachId);
+
+    public boolean favoritesByMember(Long userId, Coach coach);
 
 
     public String classifyUsers(String Email, Role role);
