@@ -76,9 +76,11 @@ public class ChatConverter {
     }
 
     public static ChatRoomResponseDTO.ChatRoomSimpleDTO toMemberChatRoomSimpleDTO(ChatRoom chatRoom){
+        LocalDateTime time = null;
         List<ChatMessage>chatMessageList = chatRoom.getChatMessage();
-        ChatMessage lastChatMessage = chatMessageList.get(chatMessageList.size() - 1);
-        LocalDateTime time = lastChatMessage.getCreatedAt();
+        if(!chatMessageList.isEmpty()){
+            ChatMessage lastChatMessage = chatMessageList.get(chatMessageList.size() - 1);
+            time = lastChatMessage.getCreatedAt();}
 
         return ChatRoomResponseDTO.ChatRoomSimpleDTO.builder()
                 .chatRoomId(chatRoom.getId())
@@ -100,9 +102,11 @@ public class ChatConverter {
 
     public static ChatRoomResponseDTO.ChatRoomSimpleDTO toCoachChatRoomSimpleDTO(ChatRoom chatRoom){
 
+        LocalDateTime time = null;
         List<ChatMessage>chatMessageList = chatRoom.getChatMessage();
-        ChatMessage lastChatMessage = chatMessageList.get(chatMessageList.size() - 1);
-        LocalDateTime time = lastChatMessage.getCreatedAt();
+        if(!chatMessageList.isEmpty()){
+                 ChatMessage lastChatMessage = chatMessageList.get(chatMessageList.size() - 1);
+                 time = lastChatMessage.getCreatedAt();}
 
         return ChatRoomResponseDTO.ChatRoomSimpleDTO.builder()
                 .chatRoomId(chatRoom.getId())

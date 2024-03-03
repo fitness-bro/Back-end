@@ -88,10 +88,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     @Transactional
-    public void setLastChatMessage(List<ChatRoom> chatRoomList) {
+    public void setLastChatMessage(List<ChatRoom> chatRoomList)
+    {
         for (ChatRoom chatRoom : chatRoomList) {
             List<ChatMessage> chatMessageList = chatRoom.getChatMessage();
-            if (chatMessageList != null && !chatMessageList.isEmpty()) {
+            if (!chatMessageList.isEmpty()) {
                 ChatMessage lastChatMessage = chatMessageList.get(chatMessageList.size() - 1);
                 chatRoom.setLastChatMessage(lastChatMessage.getMessage());
             }
