@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -92,7 +93,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
     @Override
     @Transactional
-    public void createFavoriteCoach(Long userId, Long coachId) {
+    public Favorites createFavoriteCoach(Long userId, Long coachId) {
 
         // userId, coachId로 멤버와 코치 객체 가져오기
         Member member = memberRepository.findById(userId).orElse(null);
@@ -101,10 +102,21 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         if(coach == null ){
             throw new TempHandler(ErrorStatus.COACH_NOT_FOUND);
         }
+        List<Favorites> fl = favoriteRepository.findAllByMemberId(member.getId());
+
+        for(Favorites favorites:fl){
+            if(favorites.getCoach() == coach){
+                favorites.setStatus(!favorites.isStatus());
+
+                return favorites;
+            }
+        }
 
         // favorites repository에 저장
         Favorites favorites = FavoriteConverter.toFavorite(member, coach);
         favoriteRepository.save(favorites);
+
+        return favorites;
     }
 
 
