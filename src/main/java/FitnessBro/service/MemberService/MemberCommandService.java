@@ -18,7 +18,7 @@ public interface MemberCommandService {
 
     public String joinSocialMember(String email, String id);
 
-    Favorites createFavoriteCoach(Long userId, Long coachId);
+    String createFavoriteCoach(Long userId, Long coachId);
 
 
     public String classifyUsers(String Email, Role role);
