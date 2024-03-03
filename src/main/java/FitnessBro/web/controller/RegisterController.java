@@ -130,4 +130,23 @@ public class RegisterController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess(requestRegisterListDTO));
     }
 
+    @PostMapping("/member/register-status")
+    @Operation(summary = "멤버토큰과 코치아이디로 성사 상태 get", description = "성사 상태 얻기")
+    public ResponseEntity<RegisterStatus> getRegisterStatus(@RequestHeader(value = "token")String token,
+                                                            @RequestBody @Valid RegisterRequestDTO.CoachRequestDTO request){
+
+        String userEmail = loginService.decodeJwt(token);
+        Long memberId = loginService.getIdByEmail(userEmail);
+
+        Member member = memberCommandService.getMemberById(memberId);
+        Coach coach = coachService.getCoachById(request.getCoachId());
+
+        Register register = registerService.getRegisterByMemberCoach(member,coach);
+
+        if(register == null){
+            return ResponseEntity.status(HttpStatus.OK).body(RegisterStatus.UNSUCCESS);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(register.getRegisterStatus());
+    }
+
 }

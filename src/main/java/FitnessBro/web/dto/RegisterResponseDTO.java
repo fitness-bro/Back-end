@@ -32,4 +32,5 @@ public class RegisterResponseDTO {
         Long memberId;
         String memberNickname;
     }
+
 }
