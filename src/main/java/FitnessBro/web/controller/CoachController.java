@@ -5,9 +5,11 @@ import FitnessBro.apiPayload.ApiResponse;
 import FitnessBro.converter.CoachConverter;
 import FitnessBro.converter.ReviewConverter;
 import FitnessBro.domain.Coach;
+import FitnessBro.domain.Member;
 import FitnessBro.domain.Review;
 import FitnessBro.service.CoachService.CoachService;
 import FitnessBro.service.LoginService.LoginService;
+import FitnessBro.service.MemberService.MemberCommandService;
 import FitnessBro.service.RegisterService.RegisterService;
 import FitnessBro.service.ReviewService.ReviewService;
 import FitnessBro.web.dto.Coach.CoachRequestDTO;
@@ -32,6 +34,7 @@ public class CoachController {
     private final ReviewService reviewService;
     private final RegisterService registerService;
     private final LoginService loginService;
+    private final MemberCommandService memberCommandService;
 
     //헬스장 id를 받지 않고 그냥 다 넘겨 줄 때
     @GetMapping("/search")
@@ -53,13 +56,22 @@ public class CoachController {
 
     @GetMapping("/{coachId}/info")
     @Operation(summary = "동네형 상세 정보 조회하기 API", description = "동네형 id(coachId)를 받아 동네형 상세 정보 전달, 로그인하지 않은 사용자도 조회 가능")
-    public ResponseEntity<ApiResponse<CoachResponseDTO.CoachProfileDTO>> getCoachInfo(@PathVariable(value = "coachId") Long coachId) {
+    public ResponseEntity<ApiResponse<CoachResponseDTO.CoachProfileDTO>> getCoachInfo(@RequestHeader(value = "token") String token, @PathVariable(value = "coachId") Long coachId) {
         try {
             Coach coach = coachService.getCoachById(coachId);
 
-            CoachResponseDTO.CoachProfileDTO coachProfileDTO = CoachConverter.toCoachProfileDTO(coach);
+            if (token == null||token.isEmpty()) {
+                CoachResponseDTO.CoachProfileDTO coachProfileDTO = CoachConverter.toCoachProfileDTO(coach, false);
+                return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess(coachProfileDTO));
+            }
+            else{
+                String userEmail = loginService.decodeJwt(token);
+                Long userId = loginService.getIdByEmail(userEmail);
+                boolean favorites = memberCommandService.favoritesByMember(userId,coach);
+                CoachResponseDTO.CoachProfileDTO coachProfileDTO = CoachConverter.toCoachProfileDTO(coach,favorites);
+                return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess(coachProfileDTO));
 
-            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess(coachProfileDTO));
+            }
 
         }catch (Exception e){
             ApiResponse<CoachResponseDTO.CoachProfileDTO> apiResponse = ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);

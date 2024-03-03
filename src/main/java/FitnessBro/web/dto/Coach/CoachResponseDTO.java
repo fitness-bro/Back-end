@@ -26,6 +26,8 @@ public class CoachResponseDTO {
         String address;     // 위치
         String schedule;
         String coachPicture;
+
+        boolean favorites = false;
         // 리뷰 수 추가해야 됨
 
     }

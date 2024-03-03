@@ -119,6 +119,21 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
 
     }
+    @Override
+    @Transactional
+    public boolean favoritesByMember(Long userId , Coach coach){
+
+        List<Favorites> fl = favoriteRepository.findAllByMemberId(userId);
+
+        for(Favorites favorites:fl){
+            if(favorites.getCoach() == coach){
+                return true;
+            }
+        }
+        return false;
+
+    }
+
 
 
     @Override

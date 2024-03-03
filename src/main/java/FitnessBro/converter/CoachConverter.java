@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class CoachConverter {
 
 
-    public static CoachResponseDTO.CoachProfileDTO toCoachProfileDTO(Coach coach){
+    public static CoachResponseDTO.CoachProfileDTO toCoachProfileDTO(Coach coach, boolean favorites){
         return CoachResponseDTO.CoachProfileDTO.builder()
                 .coachId(coach.getId())
                 .nickname(coach.getNickname())
@@ -23,6 +23,7 @@ public class CoachConverter {
                 .address(coach.getAddress())
                 .schedule(coach.getSchedule())
                 .coachPicture(coach.getPictureURL())
+                .favorites(favorites)
                 .build();
     }
 
