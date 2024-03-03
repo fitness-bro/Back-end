@@ -46,4 +46,5 @@ public class RegisterConverter {
                 .map(register -> torequestRegisterDTO(register))
                 .collect(Collectors.toList());
     }
+
 }
