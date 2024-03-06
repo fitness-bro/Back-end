@@ -22,4 +22,6 @@ public interface CoachService {
     void insertCoachAlbum(Long coachId, List<MultipartFile> pictureList);
 
     void deleteCoachProfileImage(Long coachId);
+
+    void updateCoachAlbum(Long coachId, List<MultipartFile> pictureList, List<String> pictureUrlList);
 }

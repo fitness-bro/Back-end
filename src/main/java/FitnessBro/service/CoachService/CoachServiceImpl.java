@@ -133,20 +133,54 @@ public class CoachServiceImpl implements CoachService{
     public void insertCoachAlbum(Long coachId, List<MultipartFile> pictureList) {   // 동네형 사진첩 삽입
 
         Coach coach = coachRepository.findById(coachId).orElse(null);
-        Boolean isExist = coachImageRepository.existsByCoachId(coachId);
+//        Boolean isExist = coachImageRepository.existsByCoachId(coachId);
+//
+//        if(isExist){    // 이미 앨범에 사진이 존재할 경우 모두 지우기
+//            List<CoachImage> coachImageList = coachImageRepository.findByCoachId(coachId);
+//            for(CoachImage coachImage : coachImageList){
+//                String pictureUrl = coachImage.getUrl();
+//                String savedUuid = pictureUrl.substring(pictureUrl.lastIndexOf("/album/") + "/album/".length());
+//                Uuid uuid = uuidRepository.findByUuid(savedUuid);
+//
+//                s3Manager.deleteFile(s3Manager.generateAlbumKeyName(uuid));
+//                uuidRepository.deleteByUuid(savedUuid);
+//                coachImageRepository.deleteById(coachImage.getId());
+//            }
+//        }
 
-        if(isExist){    // 이미 앨범에 사진이 존재할 경우 모두 지우기
-            List<CoachImage> coachImageList = coachImageRepository.findByCoachId(coachId);
-            for(CoachImage coachImage : coachImageList){
-                String pictureUrl = coachImage.getUrl();
-                String savedUuid = pictureUrl.substring(pictureUrl.lastIndexOf("/album/") + "/album/".length());
+        for(MultipartFile picture : pictureList){   // picture마다 유일한 URL 값 생성
+            String uuid = UUID.randomUUID().toString();
+            Uuid savedUuid = uuidRepository.save(Uuid.builder().uuid(uuid).build());
+
+            String pictureUrl = s3Manager.uploadFile(s3Manager.generateAlbumKeyName(savedUuid), picture);
+            coachImageRepository.save(CoachConverter.toCoachAlbum(pictureUrl, coach));
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateCoachAlbum(Long coachId, List<MultipartFile> pictureList, List<String> pictureUrlList) {
+
+        Coach coach = coachRepository.findById(coachId).orElse(null);
+
+        List<CoachImage> coachImageList = coachImageRepository.findByCoachId(coachId);
+
+        for(CoachImage coachImage : coachImageList){
+            String coachImageUrl = coachImage.getUrl();
+            boolean isExist = pictureUrlList.contains(coachImageUrl);
+
+            if(!isExist){   // 주어진 URL 리스트에 DB에 있던 coachImageURL이 없으면 지우는 코드
+                String savedUuid = coachImageUrl.substring(coachImageUrl.lastIndexOf("/album/") + "/album/".length());
                 Uuid uuid = uuidRepository.findByUuid(savedUuid);
 
                 s3Manager.deleteFile(s3Manager.generateAlbumKeyName(uuid));
                 uuidRepository.deleteByUuid(savedUuid);
                 coachImageRepository.deleteById(coachImage.getId());
             }
+
         }
+
+
 
         for(MultipartFile picture : pictureList){   // picture마다 유일한 URL 값 생성
             String uuid = UUID.randomUUID().toString();
@@ -175,7 +209,6 @@ public class CoachServiceImpl implements CoachService{
         }
 
     }
-
 
     @Override
     @Transactional

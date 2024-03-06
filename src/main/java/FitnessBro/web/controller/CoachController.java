@@ -196,7 +196,8 @@ public class CoachController {
     @Operation(summary = "동네형 내 정보 수정하기 API")
     public ResponseEntity<ApiResponse<String>> coachUpdate(@RequestPart(value = "request") CoachRequestDTO.CoachProfileRegisterDTO request,
                                                                                                  @RequestPart(value = "picture", required = false) MultipartFile picture,
-                                                                                                 @RequestPart(value = "album", required = false) List<MultipartFile> pictureList,
+                                                                                                 @RequestPart(value = "albumFile", required = false) List<MultipartFile> pictureList,
+                                                                                                 @RequestPart(value = "albumURL", required = false) List<String> pictureUrlList,
                                                                                                  @RequestHeader(value = "token") String token){
         String userEmail = loginService.decodeJwt(token);
         Long userId = loginService.getIdByEmail(userEmail);
@@ -204,7 +205,7 @@ public class CoachController {
         try {
             coachService.insertCoachInfo(userId, request);
             if(picture != null) coachService.insertCoachPicture(userId, picture);   // 동네형 프로필 이미지 등록
-            if(pictureList != null) coachService.insertCoachAlbum(userId,pictureList); // 동네형 사진첩 이미지 등록
+            if(pictureList != null || pictureUrlList != null) coachService.updateCoachAlbum(userId,pictureList, pictureUrlList); // 동네형 사진첩 이미지 등록
 
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess("동네형의 정보가 성공적으로 수정되었습니다."));
         } catch (Exception e){
