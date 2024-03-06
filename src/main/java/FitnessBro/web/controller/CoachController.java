@@ -205,9 +205,7 @@ public class CoachController {
         try {
             coachService.insertCoachInfo(userId, request);
             if(picture != null) coachService.insertCoachPicture(userId, picture);   // 동네형 프로필 이미지 등록
-            if(pictureList != null || pictureUrlList != null){
-                coachService.updateCoachAlbum(userId,pictureList, pictureUrlList); // 동네형 사진첩 이미지 등록
-            }
+            coachService.updateCoachAlbum(userId,pictureList, pictureUrlList); // 동네형 사진첩 이미지 등록
 
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess("동네형의 정보가 성공적으로 수정되었습니다."));
         } catch (Exception e){
