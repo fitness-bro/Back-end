@@ -192,18 +192,6 @@ public class CoachServiceImpl implements CoachService{
 
     @Override
     @Transactional
-    public void example(List<String> pictureUrlList) {
-        List<CoachImage> coachImageList = coachImageRepository.findAll();
-
-        for(String pictureUrl : pictureUrlList){
-            boolean isExist = coachImageList.contains(pictureUrl);
-            if(isExist) System.out.println(pictureUrl + "은 존재합니다");
-        }
-
-    }
-
-    @Override
-    @Transactional
     public void deleteCoachProfileImage(Long coachId) {
 
         Coach coach = coachRepository.findById(coachId).orElse(null);
