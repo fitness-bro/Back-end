@@ -183,10 +183,10 @@ public class CoachController {
     @PatchMapping(value = "/update", consumes = "multipart/form-data")
     @Operation(summary = "동네형 내 정보 수정하기 API")
     public ResponseEntity<ApiResponse<String>> coachUpdate(@RequestPart(value = "request") CoachRequestDTO.CoachProfileRegisterDTO request,
-                                                                                                 @RequestPart(value = "picture", required = false) MultipartFile picture,
-                                                                                                 @RequestPart(value = "albumFile", required = false) List<MultipartFile> pictureList,
-                                                                                                 @RequestPart(value = "albumURL", required = false) List<String> pictureUrlList,
-                                                                                                 @RequestHeader(value = "token") String token){
+                                                           @RequestPart(value = "picture", required = false) MultipartFile picture,
+                                                           @RequestPart(value = "albumFile", required = false) List<MultipartFile> pictureList,
+                                                           @RequestParam(value = "albumURL", required = false) List<String> pictureUrlList,
+                                                           @RequestHeader(value = "token") String token){
         String userEmail = loginService.decodeJwt(token);
         Long userId = loginService.getIdByEmail(userEmail);
 
@@ -196,21 +196,6 @@ public class CoachController {
             coachService.updateCoachAlbum(userId,pictureList, pictureUrlList); // 동네형 사진첩 이미지 등록
 
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess("동네형의 정보가 성공적으로 수정되었습니다."));
-        } catch (Exception e){
-            ApiResponse<String> apiResponse = ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
-        }
-    }
-
-    @PostMapping(value = "/example", consumes = "multipart/form-data")
-    @Operation(summary = "다중 이미지 예시 API")
-    public ResponseEntity<ApiResponse<String>> example(@RequestParam(value = "albumURL", required = false) List<String> pictureUrlList){
-
-
-        try {
-            coachService.example(pictureUrlList);
-
-            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess("성공입니다."));
         } catch (Exception e){
             ApiResponse<String> apiResponse = ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
