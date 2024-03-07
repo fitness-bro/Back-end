@@ -214,9 +214,9 @@ public class CoachController {
         }
     }
 
-    @PatchMapping(value = "/example", consumes = "multipart/form-data")
+    @PostMapping(value = "/example", consumes = "multipart/form-data")
     @Operation(summary = "다중 이미지 예시 API")
-    public ResponseEntity<ApiResponse<String>> example(@RequestPart(value = "albumURL", required = false) List<String> pictureUrlList){
+    public ResponseEntity<ApiResponse<String>> example(@RequestParam(value = "albumURL", required = false) List<String> pictureUrlList){
 
 
         try {
