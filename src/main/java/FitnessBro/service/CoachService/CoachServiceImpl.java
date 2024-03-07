@@ -155,13 +155,7 @@ public class CoachServiceImpl implements CoachService{
             for(CoachImage coachImage : coachImageList){
                 String coachImageUrl = coachImage.getUrl();
 
-                boolean isExist = false;
-                for (String pictureURL : pictureUrlList) {
-                    if (pictureURL.toLowerCase().contains(coachImageUrl.toLowerCase())) {
-                        isExist = true;
-                        break;
-                    }
-                }
+                boolean isExist = pictureUrlList.contains(coachImageUrl);
 
                 if(!isExist){   // 주어진 URL 리스트에 DB에 있던 coachImageURL이 없으면 지우는 코드
                     String savedUuid = coachImageUrl.substring(coachImageUrl.lastIndexOf("/album/") + "/album/".length());
@@ -192,6 +186,18 @@ public class CoachServiceImpl implements CoachService{
                 String pictureUrl = s3Manager.uploadFile(s3Manager.generateAlbumKeyName(savedUuid), picture);
                 coachImageRepository.save(CoachConverter.toCoachAlbum(pictureUrl, coach));
             }
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public void example(List<String> pictureUrlList) {
+        List<CoachImage> coachImageList = coachImageRepository.findAll();
+
+        for(String pictureUrl : pictureUrlList){
+            boolean isExist = coachImageList.contains(pictureUrl);
+            if(isExist) System.out.println(pictureUrl + "은 존재합니다");
         }
 
     }

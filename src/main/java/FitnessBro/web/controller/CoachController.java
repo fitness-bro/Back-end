@@ -214,6 +214,21 @@ public class CoachController {
         }
     }
 
+    @PatchMapping(value = "/example", consumes = "multipart/form-data")
+    @Operation(summary = "다중 이미지 예시 API")
+    public ResponseEntity<ApiResponse<String>> example(@RequestPart(value = "albumURL", required = false) List<String> pictureUrlList){
+
+
+        try {
+            coachService.example(pictureUrlList);
+
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess("성공입니다."));
+        } catch (Exception e){
+            ApiResponse<String> apiResponse = ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
+        }
+    }
+
     @DeleteMapping("/update/delete/image")
     @Operation(summary = "동네형 내 정보 수정하기에서 프로필 이미지 삭제 API")
     public ResponseEntity<ApiResponse<String>> coachDeleteProfileImage(@RequestHeader(value = "token") String token){
