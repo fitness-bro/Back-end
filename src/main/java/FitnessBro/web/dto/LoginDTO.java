@@ -10,4 +10,5 @@ public class LoginDTO {
     String userToken;
     Long userId;
     Role role;
+    Boolean isUser;
 }
