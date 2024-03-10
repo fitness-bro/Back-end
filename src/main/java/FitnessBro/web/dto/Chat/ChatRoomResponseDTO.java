@@ -35,6 +35,7 @@ public class ChatRoomResponseDTO {
     @Setter
     public static class ChatRoomSimpleDTO{
         private Long chatRoomId;
+        private Long userId;
         private String userName;
         private String partnerName;
         List<ChatMessageDTO> chatMessageDTOList;
@@ -46,7 +47,7 @@ public class ChatRoomResponseDTO {
     @Builder
     @Getter
     public static class ChatMessageDTO{
-        private String sender;
+        private Long userId;
         private String message;
         private LocalDateTime createdAt;
     }

@@ -26,6 +26,8 @@ public class CoachResponseDTO {
         String address;     // 위치
         String schedule;
         String coachPicture;
+
+        boolean favorites = false;
         // 리뷰 수 추가해야 됨
 
     }
@@ -113,6 +115,10 @@ public class CoachResponseDTO {
         Integer price;
         String comment;
         String introduction;
+        String address;
+        String region;
+        String subAddress;
+        String detailAddress;
         List<String> pictureURLs;
 
     }

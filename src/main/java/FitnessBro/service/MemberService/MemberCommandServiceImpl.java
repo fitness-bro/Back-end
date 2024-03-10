@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -92,7 +93,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
     @Override
     @Transactional
-    public void createFavoriteCoach(Long userId, Long coachId) {
+    public String createFavoriteCoach(Long userId, Long coachId) {
 
         // userId, coachId로 멤버와 코치 객체 가져오기
         Member member = memberRepository.findById(userId).orElse(null);
@@ -101,11 +102,38 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         if(coach == null ){
             throw new TempHandler(ErrorStatus.COACH_NOT_FOUND);
         }
+        List<Favorites> fl = favoriteRepository.findAllByMemberId(member.getId());
+
+        for(Favorites favorites:fl){
+            if(favorites.getCoach() == coach){
+
+                favoriteRepository.delete(favorites);
+                return "찜을 취소했습니다.";
+            }
+        }
 
         // favorites repository에 저장
         Favorites favorites = FavoriteConverter.toFavorite(member, coach);
         favoriteRepository.save(favorites);
+        return "성공적으로 찜했습니다.";
+
+
     }
+    @Override
+    @Transactional
+    public boolean favoritesByMember(Long userId , Coach coach){
+
+        List<Favorites> fl = favoriteRepository.findAllByMemberId(userId);
+
+        for(Favorites favorites:fl){
+            if(favorites.getCoach() == coach){
+                return true;
+            }
+        }
+        return false;
+
+    }
+
 
 
     @Override
@@ -197,9 +225,10 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     }
 
     @Override
-    public void deleteMemberPicture(Long userId) {
+    @Transactional
+    public void deleteMemberProfileImage(Long memberId) {
 
-        Member member = memberRepository.findById(userId).orElse(null);
+        Member member = memberRepository.findById(memberId).orElse(null);
 
         if(member.getPictureURL() != null){      // 이미 프로필 이미지가 존재하는 경우 AmazonS3에서 지우는 코드
             String memberPictureURL = member.getPictureURL();
@@ -210,6 +239,8 @@ public class MemberCommandServiceImpl implements MemberCommandService {
             uuidRepository.deleteByUuid(savedUuid);
             member.setPictureURL(null);
         }
+
     }
+
 
 }

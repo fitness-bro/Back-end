@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class CoachConverter {
 
 
-    public static CoachResponseDTO.CoachProfileDTO toCoachProfileDTO(Coach coach){
+    public static CoachResponseDTO.CoachProfileDTO toCoachProfileDTO(Coach coach, boolean favorites){
         return CoachResponseDTO.CoachProfileDTO.builder()
                 .coachId(coach.getId())
                 .nickname(coach.getNickname())
@@ -23,6 +23,7 @@ public class CoachConverter {
                 .address(coach.getAddress())
                 .schedule(coach.getSchedule())
                 .coachPicture(coach.getPictureURL())
+                .favorites(favorites)
                 .build();
     }
 
@@ -111,6 +112,10 @@ public class CoachConverter {
                 .schedule(coach.getSchedule())
                 .comment(coach.getComment())
                 .introduction(coach.getIntroduction())
+                .address(coach.getAddress())
+                .region(coach.getRegion())
+                .subAddress(coach.getSubAddress())
+                .detailAddress(coach.getDetailAddress())
                 .pictureURLs(coach.getCoachImageList().stream().
                         map(CoachImage::getUrl).
                         collect(Collectors.toList()))

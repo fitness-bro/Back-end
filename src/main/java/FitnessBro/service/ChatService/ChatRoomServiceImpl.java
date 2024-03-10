@@ -99,6 +99,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         }
     }
 
+
     @Override
     @Transactional
     public ChatRoom findChatRoomByMemberIdAndCoachId(Long memberId, Long coachId){

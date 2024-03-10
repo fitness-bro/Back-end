@@ -86,8 +86,4 @@ public class Coach extends BaseEntity {
         }
     }
 
-
-
-
-
 }

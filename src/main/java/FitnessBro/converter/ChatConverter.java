@@ -54,6 +54,7 @@ public class ChatConverter {
 
         return ChatMessage.builder()
                 .chatRoom(chatRoom)
+                .userId(message.getUserId())
                 .message(message.getMessage())
                 .createdAt(now)
                 .sender(message.getSender())
@@ -62,8 +63,8 @@ public class ChatConverter {
 
     public static ChatRoomResponseDTO.ChatMessageDTO toSimpleChatMessageDTO(ChatMessage chatMessage){
         return ChatRoomResponseDTO.ChatMessageDTO.builder()
+                .userId(chatMessage.getUserId())
                 .message(chatMessage.getMessage())
-                .sender(chatMessage.getSender())
                 .createdAt(chatMessage.getCreatedAt())
                 .build();
     }
@@ -75,14 +76,20 @@ public class ChatConverter {
     }
 
     public static ChatRoomResponseDTO.ChatRoomSimpleDTO toMemberChatRoomSimpleDTO(ChatRoom chatRoom){
+        LocalDateTime time = null;
+        List<ChatMessage>chatMessageList = chatRoom.getChatMessage();
+        if(!chatMessageList.isEmpty()){
+            ChatMessage lastChatMessage = chatMessageList.get(chatMessageList.size() - 1);
+            time = lastChatMessage.getCreatedAt();}
 
         return ChatRoomResponseDTO.ChatRoomSimpleDTO.builder()
                 .chatRoomId(chatRoom.getId())
+                .userId(chatRoom.getMember().getId())
                 .userName(chatRoom.getMember().getNickname())
                 .partnerName(chatRoom.getCoach().getNickname())
                 .chatMessageDTOList(ChatConverter.toSimpleChatMessageListDTO(chatRoom.getChatMessage()))
                 .lastChatMessage(chatRoom.getLastChatMessage())
-                .lastChatTime(chatRoom.getUpdatedAt())
+                .lastChatTime(time)
                 .pictureUrl(chatRoom.getCoach().getPictureURL())
                 .build();
     }
@@ -95,12 +102,19 @@ public class ChatConverter {
 
     public static ChatRoomResponseDTO.ChatRoomSimpleDTO toCoachChatRoomSimpleDTO(ChatRoom chatRoom){
 
+        LocalDateTime time = null;
+        List<ChatMessage>chatMessageList = chatRoom.getChatMessage();
+        if(!chatMessageList.isEmpty()){
+                 ChatMessage lastChatMessage = chatMessageList.get(chatMessageList.size() - 1);
+                 time = lastChatMessage.getCreatedAt();}
+
         return ChatRoomResponseDTO.ChatRoomSimpleDTO.builder()
                 .chatRoomId(chatRoom.getId())
+                .userId(chatRoom.getCoach().getId())
                 .userName(chatRoom.getCoach().getNickname())
                 .partnerName(chatRoom.getMember().getNickname())
                 .lastChatMessage(chatRoom.getLastChatMessage())
-                .lastChatTime(chatRoom.getUpdatedAt())
+                .lastChatTime(time)
                 .chatMessageDTOList(ChatConverter.toSimpleChatMessageListDTO(chatRoom.getChatMessage()))
                 .pictureUrl(chatRoom.getMember().getPictureURL())
                 .build();
