@@ -55,6 +55,7 @@ public class LoginController {
         return ResponseEntity.ok().body(ApiResponse.onSuccess("code : " + code));
     }
 
+
     @GetMapping("/oauth2/code/token/kakao")
     public ResponseEntity<ApiResponse<LoginDTO>> KakaoCode(@RequestParam(value = "code") String code) {
         ResponseEntity<String> stringResponseEntity = kakaoService.getKakaoAccessToken(code);
@@ -62,13 +63,14 @@ public class LoginController {
         String token = stringResponseEntity.getBody();
         HashMap<String, Object> userInfo = kakaoService.getUserInfo(token);
 
+        Boolean isUser = memberCommandService.isUser(String.valueOf(userInfo.get("email")), String.valueOf(userInfo.get("id")));
         String userToken = memberCommandService.joinSocialMember(String.valueOf(userInfo.get("email")), String.valueOf(userInfo.get("id")));
 
         String userEmail = loginService.decodeJwt(userToken);
         Long userId = loginService.getIdByEmail(userEmail);
         Role role = loginService.getRoleByEmail(userEmail);
 
-        return ResponseEntity.ok().body(ApiResponse.onSuccess(LoginConverter.loginDTO(userToken,userId,role)));
+        return ResponseEntity.ok().body(ApiResponse.onSuccess(LoginConverter.loginDTO(userToken,userId,role,isUser)));
     }
     @GetMapping("/oauth2/code/naver")
     public ResponseEntity<ApiResponse<LoginDTO>> NaverLogin(@RequestParam("code") String code, @RequestParam("state") String state) {
@@ -79,6 +81,7 @@ public class LoginController {
 
         HashMap<String, Object> userInfo = naverService.getUserInfo(token);
 
+        Boolean isUser = memberCommandService.isUser(String.valueOf(userInfo.get("email")), String.valueOf(userInfo.get("id")));
 
         String userToken = memberCommandService.joinSocialMember(String.valueOf(userInfo.get("email")), String.valueOf(userInfo.get("id")));
 
@@ -86,7 +89,7 @@ public class LoginController {
         Long userId = loginService.getIdByEmail(userEmail);
         Role role = loginService.getRoleByEmail(userEmail);
 
-        return ResponseEntity.ok().body(ApiResponse.onSuccess(LoginConverter.loginDTO(userToken,userId,role)));
+        return ResponseEntity.ok().body(ApiResponse.onSuccess(LoginConverter.loginDTO(userToken,userId,role,isUser)));
     }
 
     @GetMapping("/oauth2/code/google")
@@ -98,12 +101,15 @@ public class LoginController {
     public ResponseEntity<ApiResponse<LoginDTO>> GoogleToken(@RequestParam(value = "accessToken") String accessToken) {
 
         HashMap<String,String> userInfo = googleService.getUserInfo(accessToken);
+
+        Boolean isUser = memberCommandService.isUser(userInfo.get("email"), userInfo.get("id"));
         String userToken = memberCommandService.joinSocialMember(userInfo.get("email"), userInfo.get("id"));
+
 
         String userEmail = loginService.decodeJwt(userToken);
         Long userId = loginService.getIdByEmail(userEmail);
         Role role = loginService.getRoleByEmail(userEmail);
-        return ResponseEntity.ok().body(ApiResponse.onSuccess(LoginConverter.loginDTO(userToken,userId,role)));
+        return ResponseEntity.ok().body(ApiResponse.onSuccess(LoginConverter.loginDTO(userToken,userId,role,isUser)));
     }
 
 }

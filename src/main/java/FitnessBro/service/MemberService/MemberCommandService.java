@@ -21,7 +21,7 @@ public interface MemberCommandService {
 
     String createFavoriteCoach(Long userId, Long coachId);
 
-    public boolean favoritesByMember(Long userId, Coach coach);
+    public Boolean favoritesByMember(Long userId, Coach coach);
 
 
     public String classifyUsers(String Email, Role role);
@@ -31,5 +31,7 @@ public interface MemberCommandService {
     void insertInfoWithImage(Long memberId, MemberRequestDTO.MemberProfileRegisterDTO request, MultipartFile file);
 
     void deleteMemberProfileImage(Long memberId);
+
+    public boolean isUser(String email, String id);
 }
 

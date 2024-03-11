@@ -70,6 +70,18 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         return "SUCCESS";
     }
 
+    @Override
+    @Transactional
+    public boolean isUser(String email, String id){
+        if (memberRepository.existsByEmail(email) || coachRepository.existsByEmail(email)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+
     // social member email, id 값을 각각 email, password에 저장 한 후 토큰 발급
     @Override
     @Transactional
@@ -121,7 +133,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     }
     @Override
     @Transactional
-    public boolean favoritesByMember(Long userId , Coach coach){
+    public Boolean favoritesByMember(Long userId , Coach coach){
 
         List<Favorites> fl = favoriteRepository.findAllByMemberId(userId);
 
