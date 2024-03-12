@@ -108,7 +108,7 @@ public class MemberController {
 
         try{
 
-            reviewService.updateCoachRating(request);
+            reviewService.updateCoachRating(request); // 평균 내는 메소드 추가
 
             if(files != null) { // 리뷰에 이미지가 포함되어 있는 경우
                 reviewService.createReviewWithFiles(request, files, userId);
