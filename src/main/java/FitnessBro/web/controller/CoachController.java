@@ -56,7 +56,8 @@ public class CoachController {
 
     @GetMapping("/{coachId}/info")
     @Operation(summary = "동네형 상세 정보 조회하기 API", description = "동네형 id(coachId)를 받아 동네형 상세 정보 전달, 로그인하지 않은 사용자도 조회 가능")
-    public ResponseEntity<ApiResponse<CoachResponseDTO.CoachProfileDTO>> getCoachInfo(@RequestHeader(value = "token") String token, @PathVariable(value = "coachId") Long coachId) {
+    public ResponseEntity<ApiResponse<CoachResponseDTO.CoachProfileDTO>> getCoachInfo(@RequestHeader(value = "token", required = false) String token,
+                                                                                      @PathVariable(value = "coachId") Long coachId) {
         try {
             Coach coach = coachService.getCoachById(coachId);
 
