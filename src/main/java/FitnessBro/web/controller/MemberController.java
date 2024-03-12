@@ -107,10 +107,15 @@ public class MemberController {
         Long userId = loginService.getIdByEmail(userEmail);
 
         try{
+
+            reviewService.updateCoachRating(request);
+
             if(files != null) { // 리뷰에 이미지가 포함되어 있는 경우
                 reviewService.createReviewWithFiles(request, files, userId);
             } else {    // 리뷰에 미지가 포함되어 있지 않은 경우
                 reviewService.createReview(request,userId);
+
+
             }
             ApiResponse<String> apiResponse = ApiResponse.onSuccess("성공적으로 리뷰 작성을 했습니다.");
             return ResponseEntity.status(HttpStatus.OK).body(apiResponse);

@@ -31,7 +31,8 @@ public class Coach extends BaseEntity {
 
     private int age;
 
-    private float rating;
+    private float rating = 0;
+    private float reviewNum = 0;
     private String address;
     private String region;
     private String subAddress;

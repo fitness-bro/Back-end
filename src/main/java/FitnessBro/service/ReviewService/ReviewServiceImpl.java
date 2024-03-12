@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -121,6 +122,25 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public Long getReviewNumMember(Long memberId){
         return reviewRepository.countByMemberId(memberId);
+    }
+
+    @Override
+    @Transactional
+    public void updateCoachRating(ReviewRequestDTO.CreateReviewDTO review) {
+
+        Coach coach = coachRepository.getCoachByNickname(review.getNickname());
+
+        coach.setReviewNum(coach.getReviewNum()+1);
+
+        Float totalRating = (coach.getRating()+review.getRating())/coach.getReviewNum();
+        totalRating = Math.round(totalRating*100.0) / 100.0f;
+
+        coach.setRating(totalRating);
+
+
+
+
+
     }
 
 }

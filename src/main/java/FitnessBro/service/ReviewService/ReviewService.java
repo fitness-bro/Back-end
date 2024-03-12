@@ -1,5 +1,6 @@
 package FitnessBro.service.ReviewService;
 
+import FitnessBro.domain.Coach;
 import FitnessBro.domain.Review;
 import FitnessBro.web.dto.review.ReviewRequestDTO;
 import FitnessBro.web.dto.review.ReviewResponseDTO;
@@ -22,5 +23,7 @@ public interface ReviewService {
     public Long getReviewNumCoach(Long coachId);
 
     public Long getReviewNumMember(Long memberId);
+
+    public void updateCoachRating(ReviewRequestDTO.CreateReviewDTO review);
 
 }
