@@ -37,6 +37,7 @@ public class CoachResponseDTO {
     public static class CoachListDTO{
         Long coachId;
         String nickname;
+        String coachPicture;
         String region;
         String subAddress;
         String detailAddress;
