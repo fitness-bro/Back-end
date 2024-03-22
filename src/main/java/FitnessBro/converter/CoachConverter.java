@@ -45,6 +45,7 @@ public class CoachConverter {
                                         .map(coach -> CoachResponseDTO.CoachListDTO.builder()
                                                 .coachId(coach.getId())
                                                 .nickname(coach.getNickname())
+                                                .coachPicture(coach.getPictureURL())
                                                 .region(coach.getRegion())
                                                 .subAddress(coach.getSubAddress())
                                                 .detailAddress(coach.getDetailAddress())
